@@ -136,11 +136,11 @@ Matrix* operator*(const Matrix& m1, const Matrix& m2) {
 // This implements Gaussian Elimination with partial (row) pivoting.
 // P is the permutation matrix, L is lower-triangular and U is upper-triangular,
 // with the property that PA = LU where A is this matrix.
-tuple<Matrix *, Matrix *, Matrix *> Matrix::GEpivot() {
-    Matrix *P = new Matrix(this->_rows, this->_cols, true);
-    Matrix *L = new Matrix(this->_rows, this->_cols, true);
-    Matrix *U = new Matrix(*this);
-    tuple<Matrix *, Matrix *, Matrix *> t = make_tuple(P, L, U);
+tuple<Matrix*, Matrix*, Matrix*> Matrix::GEpivot() {
+    Matrix* P = new Matrix(this->_rows, this->_cols, true);
+    Matrix* L = new Matrix(this->_rows, this->_cols, true);
+    Matrix* U = new Matrix(*this);
+    tuple<Matrix*, Matrix*, Matrix*> t = make_tuple(P, L, U);
     if (this->_rows != this->_cols) {
         cerr << "GEpivot only implemented for square matrices, quitting" << endl;
         return t;

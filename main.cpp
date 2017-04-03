@@ -39,10 +39,10 @@ int main(int argc, char* argv[]) {
     inFile1.close();
 
     cout << "A:" << endl << *matrix1 << endl;
-    tuple<Matrix *, Matrix *, Matrix *> plu = matrix1->GEpivot();
-    Matrix *P = get<0>(plu);
-    Matrix *L = get<1>(plu);
-    Matrix *U = get<2>(plu);
+    tuple<Matrix*, Matrix*, Matrix*> plu = matrix1->GEpivot();
+    Matrix* P = get<0>(plu);
+    Matrix* L = get<1>(plu);
+    Matrix* U = get<2>(plu);
     cout << "P:" << endl << *P << endl;
     cout << "L:" << endl << *L << endl;
     cout << "U:" << endl << *U << endl;
