@@ -145,20 +145,27 @@ tuple<Matrix *, Matrix *, Matrix *> Matrix::GEpivot() {
         cerr << "GEpivot only implemented for square matrices, quitting" << endl;
         return t;
     }
-    for (int i = 0; i < this->_cols; i++) {
+    for (int i = 0; i < this->_cols - 1; i++) {
         // Find row with largest value
         int max_row = i;
         for (int j = i; j < this->_rows; j++) {
             if (abs(U->_matrix[j][i]) > abs(U->_matrix[max_row][i]))
                 max_row = j;
         }
-        // Swap max_row and row i in all 3 matrices
-        swap(U->_matrix[i], U->_matrix[max_row]);
-        for (int k = 0; k < i; k++)
-            swap(L->_matrix[i][k], L->_matrix[max_row][k]);
-        swap(P->_matrix[i], P->_matrix[max_row]);
+        if (max_row != i) {
+            // Swap max_row and row i in all 3 matrices
+            swap(U->_matrix[i], U->_matrix[max_row]);
+            for (int k = 0; k < i; k++)
+                swap(L->_matrix[i][k], L->_matrix[max_row][k]);
+            swap(P->_matrix[i], P->_matrix[max_row]);
+        }
 
-        //TODO the actual algorithm
+        // Do the row operation that will zero out this column
+        for (int l = i + 1; l < this->_cols; l++) {
+            L->_matrix[l][i] = U->_matrix[l][i] / U->_matrix[i][i];
+            for (int m = i; m < this->_cols; m++)
+                U->_matrix[l][m] = U->_matrix[l][m] - (L->_matrix[l][i] * U->_matrix[i][m]);
+        }
     }
     return t;
 }
