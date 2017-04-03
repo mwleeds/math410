@@ -11,13 +11,18 @@
 #include <stdexcept>
 #include <cmath>
 
-// This constructor allocates space for the matrix.
-Matrix::Matrix(int rows, int cols) {
+// This constructor allocates space for the matrix
+// and optionally makes it the identity matrix
+Matrix::Matrix(int rows, int cols, bool identity) {
     this->_rows = rows;
     this->_cols = cols;
     this->_matrix = new int*[this->_rows];
     for (int i = 0; i < this->_rows; i++) {
         this->_matrix[i] = new int[this->_cols];
+        if (identity) {
+            for (int j = 0; j < this->_cols; j++)
+                this->_matrix[i][j] = (i == j ? 1 : 0);
+        }
     }
 }
 
@@ -91,7 +96,7 @@ ostream& operator<<(ostream& os, const Matrix& m) {
 // This overloads the multiplication operator
 Matrix* operator*(const Matrix& m1, const Matrix& m2) {
   if (m1._cols != m2._rows) return NULL;
-  Matrix* product = new Matrix (m1._rows, m2._cols);
+  Matrix* product = new Matrix (m1._rows, m2._cols, false);
   for (int i = 0; i < m2._cols; i++) {
       for (int j = 0; j < m1._rows; j++) {
           int sum = 0;

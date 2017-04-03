@@ -8,7 +8,7 @@ using namespace std;
 
 class Matrix {
     public:
-        Matrix(int rows, int cols);
+        Matrix(int rows, int cols, bool identity);
         Matrix(ifstream& inFile, int rows, int cols);
         ~Matrix();
         int findMaxMagnitude() const;
