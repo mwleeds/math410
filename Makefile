@@ -1,7 +1,7 @@
 # File: Makefile
 # Author: Matthew Leeds
 
-CC=g++
+CC=clang++
 CFLAGS=-g -Wall -std=c++11
 OBJ=main.o Matrix.o
 
