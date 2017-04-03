@@ -16,22 +16,16 @@
 using namespace std;
 
 int main(int argc, char* argv[]) {
-    if (argc != 3) {
-        cerr << "Usage: ./math410 <filename1> <filename2>" << endl;
+    if (argc != 2) {
+        cerr << "Usage: ./math410 <filename>" << endl;
         return 1;
     }
 
     const char* filename1 = argv[1];
-    const char* filename2 = argv[2];
     ifstream inFile1(filename1);
     if (!inFile1.is_open()) {
         cerr << "Error: File '" << filename1 << "' not found or inaccessible." << endl;
         return 2;
-    }
-    ifstream inFile2(filename2);
-    if (!inFile2.is_open()) {
-        cerr << "Error: File '" << filename2 << "' not found or inaccessible." << endl;
-        return 3;
     }
 
     // Assume the data file is formatted correctly.
@@ -44,18 +38,18 @@ int main(int argc, char* argv[]) {
     Matrix* matrix1 = new Matrix(inFile1, num_rows, num_cols);
     inFile1.close();
 
-    inFile2 >> line1;
-    num_rows = atoi(line1.c_str());
-    inFile2 >> line2;
-    num_cols = atoi(line2.c_str());
-    Matrix* matrix2 = new Matrix(inFile2, num_rows, num_cols);
-    inFile2.close();
+    cout << "A:" << endl << *matrix1 << endl;
+    tuple<Matrix *, Matrix *, Matrix *> plu = matrix1->GEpivot();
+    Matrix *P = get<0>(plu);
+    Matrix *L = get<1>(plu);
+    Matrix *U = get<2>(plu);
+    cout << "P:" << endl << *P << endl;
+    cout << "L:" << endl << *L << endl;
+    cout << "U:" << endl << *U << endl;
 
-    Matrix* product = *matrix1 * *matrix2;
-    cout << *product << endl;
-
-    delete product;
+    delete P;
+    delete L;
+    delete U;
     delete matrix1;
-    delete matrix2;
     return 0;
 }

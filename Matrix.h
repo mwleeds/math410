@@ -3,6 +3,7 @@
 
 #include <string>
 #include <fstream>
+#include <tuple>
 
 using namespace std;
 
@@ -17,6 +18,8 @@ class Matrix {
         friend void swap(Matrix& first, Matrix& second);
         friend ostream& operator<<(ostream& os, const Matrix& m);
         friend Matrix* operator*(const Matrix& m1, const Matrix& m2);
+        tuple<Matrix *, Matrix *, Matrix *> GEpivot();
+
         int** _matrix;
         int _rows;
         int _cols;
