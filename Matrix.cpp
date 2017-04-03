@@ -53,6 +53,30 @@ Matrix::Matrix(ifstream& inFile, int rows, int cols) {
     }
 }
 
+void swap(Matrix& first, Matrix& second) {
+    swap(first._rows, second._rows);
+    swap(first._cols, second._cols);
+    swap(first._matrix, second._matrix);
+}
+
+Matrix& Matrix::operator=(Matrix other) {
+    using std::swap;
+    swap(*this, other);
+    return *this;
+}
+
+Matrix::Matrix(const Matrix &m) {
+    this->_rows = m._rows;
+    this->_cols = m._cols;
+    this->_matrix = new int*[this->_rows];
+    for (int i = 0; i < this->_rows; i++) {
+        this->_matrix[i] = new int[this->_cols];
+        for (int j = 0; j < this->_cols; j++) {
+            this->_matrix[i][j] = m._matrix[i][j];
+        }
+    }
+}
+
 Matrix::~Matrix() {
     for (int i = 0; i < this->_rows; i++) {
         delete []this->_matrix[i];
