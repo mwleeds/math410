@@ -16,9 +16,9 @@
 Matrix::Matrix(int rows, int cols, bool identity) {
     this->_rows = rows;
     this->_cols = cols;
-    this->_matrix = new int*[this->_rows];
+    this->_matrix = new float*[this->_rows];
     for (int i = 0; i < this->_rows; i++) {
-        this->_matrix[i] = new int[this->_cols];
+        this->_matrix[i] = new float[this->_cols];
         if (identity) {
             for (int j = 0; j < this->_cols; j++)
                 this->_matrix[i][j] = (i == j ? 1 : 0);
@@ -32,9 +32,9 @@ Matrix::Matrix(int rows, int cols, bool identity) {
 Matrix::Matrix(ifstream& inFile, int rows, int cols) {
     this->_rows = rows;
     this->_cols = cols;
-    this->_matrix = new int*[this->_rows];
+    this->_matrix = new float*[this->_rows];
     for (int i = 0; i < this->_rows; i++) {
-        this->_matrix[i] = new int[this->_cols];
+        this->_matrix[i] = new float[this->_cols];
     }
     // For each line, interpret everything but commas as integers
     for (int i = 0; i < this->_rows; i++) {
@@ -42,7 +42,7 @@ Matrix::Matrix(ifstream& inFile, int rows, int cols) {
         inFile >> line;
         stringstream ss(line);
         int j = 0;
-        int num;
+        float num;
         while (ss >> num) {
             this->_matrix[i][j] = num;
             j++;
@@ -68,9 +68,9 @@ Matrix& Matrix::operator=(Matrix other) {
 Matrix::Matrix(const Matrix &m) {
     this->_rows = m._rows;
     this->_cols = m._cols;
-    this->_matrix = new int*[this->_rows];
+    this->_matrix = new float*[this->_rows];
     for (int i = 0; i < this->_rows; i++) {
-        this->_matrix[i] = new int[this->_cols];
+        this->_matrix[i] = new float[this->_cols];
         for (int j = 0; j < this->_cols; j++) {
             this->_matrix[i][j] = m._matrix[i][j];
         }
@@ -84,30 +84,30 @@ Matrix::~Matrix() {
     delete []this->_matrix;
 }
 
-// Find the maximum magnitude value in the matrix. This can be useful for
-// determining how wide to make columns when printing it out.
-int Matrix::findMaxMagnitude() const{
-    int maxVal = 0;
+// Find the maximum width of the string representations of the values in the
+// matrix. This can be useful for determining how wide to make columns when
+// printing it out.
+int Matrix::findMaxWidth() const{
+    int maxWidth = 0;
     for (int i = 0; i < this->_rows; i++) {
         for (int j = 0; j < this->_cols; j++) {
-            if (abs(this->_matrix[i][j]) > maxVal) {
-                maxVal = abs(this->_matrix[i][j]);
-            }
+            string valString;
+            ostringstream convert;
+            convert << this->_matrix[i][j];
+            valString = convert.str();
+            if (valString.size() > maxWidth)
+                maxWidth = valString.size();
         }
     }
-    return maxVal;
+    return maxWidth;
 }
 
 // This overloads the redirection operator so matrices can be printed using cout.
 // Values are printed in fixed-width columns, right-aligned.
 ostream& operator<<(ostream& os, const Matrix& m) {
-    int maxVal = m.findMaxMagnitude();
-    string maxValString;
-    ostringstream convert;
-    convert << maxVal;
-    maxValString = convert.str();
+    int maxWidth = m.findMaxWidth();
     int extraSpace = 2;
-    int fieldWidth = extraSpace + maxValString.size();
+    int fieldWidth = extraSpace + maxWidth;
     for (int i = 0; i < m._rows; i++) {
         for (int j = 0; j < m._cols; j++) {
             os << right << setw(fieldWidth) << m._matrix[i][j];
@@ -123,7 +123,7 @@ Matrix* operator*(const Matrix& m1, const Matrix& m2) {
   Matrix* product = new Matrix (m1._rows, m2._cols, false);
   for (int i = 0; i < m2._cols; i++) {
       for (int j = 0; j < m1._rows; j++) {
-          int sum = 0;
+          float sum = 0;
           for (int k = 0; k < m1._cols; k++) {
               sum += m1._matrix[j][k] * m2._matrix[k][i];
           }
