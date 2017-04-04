@@ -47,9 +47,15 @@ int main(int argc, char* argv[]) {
     cout << "L:" << endl << *L << endl;
     cout << "U:" << endl << *U << endl;
 
+    cout << endl << endl << endl;
+
+    Matrix *R = matrix1->myChol();
+    cout << "R:" << endl << *R << endl;
+
     delete P;
     delete L;
     delete U;
+    delete R;
     delete matrix1;
     return 0;
 }

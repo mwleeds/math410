@@ -19,6 +19,7 @@ class Matrix {
         friend ostream& operator<<(ostream& os, const Matrix& m);
         friend Matrix* operator*(const Matrix& m1, const Matrix& m2);
         tuple<Matrix*, Matrix*, Matrix*> GEpivot();
+        Matrix* myChol();
 
         float** _matrix;
         int _rows;

@@ -169,3 +169,25 @@ tuple<Matrix*, Matrix*, Matrix*> Matrix::GEpivot() {
     }
     return t;
 }
+
+// This calculates the Cholesky factorization of a Hermitian positive definite
+// matrix and returns R, an upper-triangular matrix with the property that
+// A = R*R, where A is this matrix and * represents the conjugate operator.
+// The matrix is assumed to be real.
+Matrix* Matrix::myChol() {
+    Matrix* R = new Matrix(*this);
+    if (this->_rows != this->_cols) {
+        cerr << "myChol only implemented for square matrices, quitting" << endl;
+        return R;
+    }
+    for (int i = 0; i < this->_cols; i++) {
+        R->_matrix[i][i] = sqrt(R->_matrix[i][i]);
+        for (int j = i + 1; j < this->_cols; j++)
+            R->_matrix[i][j] = R->_matrix[i][j] / R->_matrix[i][i];
+        for (int k = i + 1; k < this->_cols; k++) {
+            for (int l = k; l < this->_cols; l++)
+                R->_matrix[k][l] = R->_matrix[k][l] - (R->_matrix[i][l] * R->_matrix[i][k]);
+        }
+    }
+    return R;
+}
