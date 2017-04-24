@@ -18,8 +18,10 @@ class Matrix {
         friend void swap(Matrix& first, Matrix& second);
         friend ostream& operator<<(ostream& os, const Matrix& m);
         friend Matrix* operator*(const Matrix& m1, const Matrix& m2);
+        Matrix* get_transpose();
         tuple<Matrix*, Matrix*, Matrix*> GEpivot();
         Matrix* myChol();
+        Matrix* myHess();
 
         float** _matrix;
         int _rows;

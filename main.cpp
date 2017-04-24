@@ -52,10 +52,14 @@ int main(int argc, char* argv[]) {
     Matrix *R = matrix1->myChol();
     cout << "R:" << endl << *R << endl;
 
+    Matrix *H = matrix1->myHess();
+    cout << "H:" << endl << *H << endl;
+
     delete P;
     delete L;
     delete U;
     delete R;
+    delete H;
     delete matrix1;
     return 0;
 }

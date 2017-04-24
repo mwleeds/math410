@@ -133,6 +133,16 @@ Matrix* operator*(const Matrix& m1, const Matrix& m2) {
   return product;
 }
 
+Matrix* Matrix::get_transpose() {
+    Matrix *transpose = new Matrix(this->_rows, this->_cols, false);
+    for (int i = 0; i < this->_rows; i++) {
+        for (int j = 0; j < this->_cols; j++) {
+            transpose->_matrix[j][i] = this->_matrix[i][j];
+        }
+    }
+    return transpose;
+}
+
 // This implements Gaussian Elimination with partial (row) pivoting.
 // P is the permutation matrix, L is lower-triangular and U is upper-triangular,
 // with the property that PA = LU where A is this matrix.
@@ -190,4 +200,72 @@ Matrix* Matrix::myChol() {
         }
     }
     return R;
+}
+
+float vector_2_norm (float *vec, int n) {
+    float sum_squares = 0;
+    for (int i = 0; i < n; i++)
+        sum_squares += pow(vec[i], 2);
+    return sqrt(sum_squares);
+}
+
+// This uses Householder reduction to return the matrix in upper Hessenberg
+// form, meaning the entries below the first subdiagonal are zero.
+Matrix* Matrix::myHess() {
+    Matrix* H = new Matrix(*this);
+    if (this->_rows != this->_cols) {
+        cerr << "myHess only implemented for square matrices, quitting" << endl;
+        return H;
+    }
+    for (int i = 0; i < this->_cols - 1; i++) {
+        float *x = new float[this->_cols - i - 1];
+        for (int j = i + 1; j < this->_cols; j++) {
+            x[j - i - 1] = H->_matrix[j][i];
+        }
+        float *v = new float[this->_cols - i - 1];
+        for (int j = 0; j < this->_cols - i - 1; j++) {
+            if (j == 0) {
+                v[j] = vector_2_norm (x, this->_cols - i - 1);
+                if (x[0] < 0) v[j] *= -1;
+                v[j] += x[j];
+            } else {
+                v[j] = x[j];
+            }
+        }
+        float v_2_norm = vector_2_norm (v, this->_cols - i - 1);
+        for (int j = 0; j < this->_cols - i - 1; j++) {
+            v[j] /= v_2_norm;
+        }
+        Matrix *v_matrix = new Matrix(this->_cols - i - 1, 1, false);
+        Matrix *v_transpose_matrix = new Matrix(1, this->_cols - i - 1, false);
+        for (int j = 0; j < this->_cols - i - 1; j++) {
+            v_matrix->_matrix[j][0] = v[j];
+            v_transpose_matrix->_matrix[0][j] = v[j];
+        }
+        Matrix *Q_k = new Matrix(this->_rows, this->_cols, true);
+        Matrix *v_times_v_t = *v_matrix * *v_transpose_matrix;
+        for (int j = i + 1; j < this->_rows; j++) {
+            for (int k = i + 1; k < this->_cols; k++) {
+                Q_k->_matrix[j][k] -= 2 * v_times_v_t->_matrix[j - i - 1][k - i - 1];
+            }
+        }
+
+        Matrix *new_H = *Q_k * *H;
+        delete H;
+        H = new_H;
+        Matrix *Q_k_transpose = Q_k->get_transpose();
+        new_H = *H * *Q_k_transpose;
+        delete H;
+        H = new_H;
+
+        delete []x;
+        delete []v;
+        delete v_matrix;
+        delete v_transpose_matrix;
+        delete Q_k;
+        delete Q_k_transpose;
+        delete v_times_v_t;
+    }
+
+    return H;
 }
