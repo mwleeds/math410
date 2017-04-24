@@ -2,7 +2,7 @@
 # Author: Matthew Leeds
 
 CC=clang++
-CFLAGS=-g -Wall -std=c++11
+CFLAGS=-g3 -O0 -Wall -std=c++11
 OBJ=main.o Matrix.o
 
 .PHONY: clean
